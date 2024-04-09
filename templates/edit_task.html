@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать Задачу</title>
+</head>
+<body>
+    <h1>Редактировать Задачу</h1>
+    <form method="POST">
+        <label for="title">Заголовок:</label><br>
+        <input type="text" id="title" name="title" value="{{ task.title }}"><br><br>
+        <label for="description">Описание:</label><br>
+        <textarea id="description" name="description">{{ task.description }}</textarea><br><br>
+        <input type="submit" value="Сохранить">
+    </form>
+</body>
+</html>

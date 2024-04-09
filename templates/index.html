@@ -10,9 +10,14 @@
     <h2>Список Задач:</h2>
 <ul>
     {% for task in tasks %}
-    <li>{{ task.title }} - {{ task.status }} <a href="{{ url_for('delete_task', id=task.id) }}">Удалить</a></li>
+    <li>
+        <a href="{{ url_for('view_task', id=task.id) }}">{{ task.title }} - {{ task.status }}</a>
+        <a href="{{ url_for('edit_task', id=task.id) }}">Редактировать</a>
+        <a href="{{ url_for('delete_task', id=task.id) }}">Удалить</a>
+    </li>
     {% endfor %}
 </ul>
+
 
     <h2>Создать Новую Задачу:</h2>
     <form method="POST" action="{{ url_for('create_task') }}">
@@ -22,5 +27,18 @@
         <textarea id="description" name="description"></textarea><br><br>
         <input type="submit" value="Создать">
     </form>
+
+    <h2>Фильтр по статусу:</h2>
+    <form method="GET" action="{{ url_for('index') }}">
+    <label for="status">Статус:</label>
+    <select id="status" name="status">
+        <option value="">Все</option>
+        <option value="Новая">Новая</option>
+        <option value="В процессе">В процессе</option>
+        <option value="Завершена">Завершена</option>
+    </select>
+    <input type="submit" value="Применить">
+</form>
+
 </body>
 </html>
