@@ -1,11 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager</title>
+    <title>Менеджер Задач</title>
 </head>
 <body>
-    <h1>Welcome to Task Manager</h1>
+    <h1>Менеджер Задач</h1>
+    <h2>Список Задач:</h2>
+<ul>
+    {% for task in tasks %}
+    <li>{{ task.title }} - {{ task.status }} <a href="{{ url_for('delete_task', id=task.id) }}">Удалить</a></li>
+    {% endfor %}
+</ul>
+
+    <h2>Создать Новую Задачу:</h2>
+    <form method="POST" action="{{ url_for('create_task') }}">
+        <label for="title">Заголовок:</label><br>
+        <input type="text" id="title" name="title"><br><br>
+        <label for="description">Описание:</label><br>
+        <textarea id="description" name="description"></textarea><br><br>
+        <input type="submit" value="Создать">
+    </form>
 </body>
 </html>
