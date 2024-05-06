@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+
     <title>Менеджер Задач</title>
 </head>
 <body>
@@ -39,6 +41,14 @@
     </select>
     <input type="submit" value="Применить">
 </form>
+
+<h2>Поиск по задачам:</h2>
+<form method="GET" action="{{ url_for('index') }}">
+    <label for="search">Поиск:</label>
+    <input type="text" id="search" name="search" placeholder="Введите ключевое слово">
+    <input type="submit" value="Найти">
+</form>
+
 
 </body>
 </html>

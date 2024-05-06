@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Task
+from sqlalchemy import or_
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
@@ -13,11 +14,16 @@ db.init_app(app)
 
 @app.route('/', methods=['GET'])
 def index():
+    search_query = request.args.get('search', '')
     status_filter = request.args.get('status', '')
-    if status_filter:
+
+    if search_query:
+        tasks = Task.query.filter(or_(Task.title.contains(search_query), Task.description.contains(search_query))).all()
+    elif status_filter:
         tasks = Task.query.filter_by(status=status_filter).all()
     else:
         tasks = Task.query.all()
+
     return render_template('index.html', tasks=tasks)
 
 
