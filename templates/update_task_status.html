@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Изменение статуса задачи{% endblock %}
+
+{% block content %}
+    <h1>Изменение статуса задачи</h1>
+    <form method="POST" action="{{ url_for('update_task_status', task_id=task.id) }}">
+        <label for="new_status">Новый статус:</label><br>
+        <select id="new_status" name="new_status">
+            <option value="Новая">Новая</option>
+            <option value="В работе">В работе</option>
+            <option value="Завершена">Завершена</option>
+            <option value="Отложена">Отложена</option>
+            <option value="Отменена">Отменена</option>
+        </select><br>
+        <button type="submit">Изменить статус</button>
+    </form>
+{% endblock %}

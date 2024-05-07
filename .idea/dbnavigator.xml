@@ -6,7 +6,7 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -24,13 +24,16 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="c7a62ea1-e39f-4c22-9e45-6cc7f6be37b2" object-ref="consoles/ConnectionDIP" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="c7a62ea1-e39f-4c22-9e45-6cc7f6be37b2" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="c7a62ea1-e39f-4c22-9e45-6cc7f6be37b2" dataset="tasks.task" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="c7a62ea1-e39f-4c22-9e45-6cc7f6be37b2" dataset="tasks.alembic_version" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />

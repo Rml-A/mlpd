@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask import flash
 from models import db, Task
 from sqlalchemy import or_
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'qwerty'
 db.init_app(app)
 
 # # Создание всех таблиц при первом запуске приложения
@@ -17,24 +19,29 @@ def index():
     search_query = request.args.get('search', '')
     status_filter = request.args.get('status', '')
 
+    tasks = Task.query
+
     if search_query:
-        tasks = Task.query.filter(or_(Task.title.contains(search_query), Task.description.contains(search_query))).all()
-    elif status_filter:
-        tasks = Task.query.filter_by(status=status_filter).all()
-    else:
-        tasks = Task.query.all()
+        tasks = tasks.filter(or_(Task.title.contains(search_query), Task.description.contains(search_query)))
+    if status_filter:
+        tasks = tasks.filter_by(status=status_filter)
+
+    tasks = tasks.all()
 
     return render_template('index.html', tasks=tasks)
 
 
-@app.route('/create', methods=['POST'])
+@app.route('/create', methods=['GET', 'POST'])
 def create_task():
-    title = request.form['title']
-    description = request.form['description']
-    new_task = Task(title=title, description=description)
-    db.session.add(new_task)
-    db.session.commit()
-    return redirect(url_for('index'))
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        new_task = Task(title=title, description=description)
+        db.session.add(new_task)
+        db.session.commit()
+        return redirect(url_for('index'))
+    else:
+        return render_template('create_task.html')
 
 
 @app.route('/delete/<int:id>')
@@ -60,6 +67,30 @@ def edit_task(id):
 def view_task(id):
     task = Task.query.get_or_404(id)
     return render_template('view_task.html', task=task)
+
+
+@app.route('/update_task_status/<int:task_id>', methods=['POST'])
+def update_task_status(task_id):
+    new_status = request.form['new_status']
+    task = Task.query.get(task_id)
+    if task:
+        task.status = new_status
+        db.session.commit()
+        flash('Статус задачи успешно обновлен', 'success')
+    else:
+        flash('Задача не найдена', 'error')
+    return redirect(url_for('index'))
+
+
+@app.route('/tasks')
+def tasks():
+    status = request.args.get('status')
+    if status:
+        tasks = Task.query.filter_by(status=status).all()
+    else:
+        tasks = Task.query.all()
+    return render_template('tasks.html', tasks=tasks)
+
 
 
 

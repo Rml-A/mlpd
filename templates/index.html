@@ -1,54 +1,41 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+{% extends 'base.html' %}
 
-    <title>Менеджер Задач</title>
-</head>
-<body>
-    <h1>Менеджер Задач</h1>
-    <h2>Список Задач:</h2>
-<ul>
-    {% for task in tasks %}
-    <li>
-        <a href="{{ url_for('view_task', id=task.id) }}">{{ task.title }} - {{ task.status }}</a>
-        <a href="{{ url_for('edit_task', id=task.id) }}">Редактировать</a>
-        <a href="{{ url_for('delete_task', id=task.id) }}">Удалить</a>
-    </li>
-    {% endfor %}
-</ul>
+{% block title %}Список задач{% endblock %}
 
+{% block content %}
+    <h2>Список задач</h2>
+    <a href="{{ url_for('create_task') }}">Создать новую задачу</a>
 
-    <h2>Создать Новую Задачу:</h2>
-    <form method="POST" action="{{ url_for('create_task') }}">
-        <label for="title">Заголовок:</label><br>
-        <input type="text" id="title" name="title"><br><br>
-        <label for="description">Описание:</label><br>
-        <textarea id="description" name="description"></textarea><br><br>
-        <input type="submit" value="Создать">
+    <form action="{{ url_for('tasks') }}" method="get">
+        <label for="status">Фильтр по статусу:</label>
+        <select id="status" name="status">
+            <option value="">Все</option>
+            <option value="Новая">Новая</option>
+            <option value="В работе">В работе</option>
+            <option value="Завершена">Завершена</option>
+            <option value="Отложена">Отложена</option>
+            <option value="Отменена">Отменена</option>
+        </select>
+        <button type="submit">Применить фильтр</button>
     </form>
 
-    <h2>Фильтр по статусу:</h2>
-    <form method="GET" action="{{ url_for('index') }}">
-    <label for="status">Статус:</label>
-    <select id="status" name="status">
-        <option value="">Все</option>
-        <option value="Новая">Новая</option>
-        <option value="В процессе">В процессе</option>
-        <option value="Завершена">Завершена</option>
-    </select>
-    <input type="submit" value="Применить">
-</form>
-
-<h2>Поиск по задачам:</h2>
-<form method="GET" action="{{ url_for('index') }}">
-    <label for="search">Поиск:</label>
-    <input type="text" id="search" name="search" placeholder="Введите ключевое слово">
-    <input type="submit" value="Найти">
-</form>
-
-
-</body>
-</html>
+    {% for task in tasks %}
+        <div class="task">
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <p>Статус: {{ task.status }}</p>
+            <form method="POST" action="{{ url_for('update_task_status', task_id=task.id) }}">
+                <select name="new_status">
+                    <option value="Новая">Новая</option>
+                    <option value="В работе">В работе</option>
+                    <option value="Завершена">Завершена</option>
+                    <option value="Отложена">Отложена</option>
+                    <option value="Отменена">Отменена</option>
+                </select>
+                <button type="submit">Изменить статус</button>
+            </form>
+            <a href="{{ url_for('edit_task', id=task.id) }}">Редактировать</a>
+            <a href="{{ url_for('delete_task', id=task.id) }}" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?')">Удалить</a>
+        </div>
+    {% endfor %}
+{% endblock %}

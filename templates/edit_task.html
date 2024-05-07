@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактировать Задачу</title>
-</head>
-<body>
-    <h1>Редактировать Задачу</h1>
-    <form method="POST">
-        <label for="title">Заголовок:</label><br>
-        <input type="text" id="title" name="title" value="{{ task.title }}"><br><br>
+{% extends 'base.html' %}
+
+{% block title %}Редактирование задачи{% endblock %}
+
+{% block content %}
+    <h2>Редактирование задачи</h2>
+    <form method="POST" action="{{ url_for('edit_task', id=task.id) }}">
+        <label for="title">Название:</label><br>
+        <input type="text" id="title" name="title" value="{{ task.title }}"><br>
         <label for="description">Описание:</label><br>
-        <textarea id="description" name="description">{{ task.description }}</textarea><br><br>
-        <input type="submit" value="Сохранить">
+        <textarea id="description" name="description">{{ task.description }}</textarea><br>
+        <button type="submit">Сохранить изменения</button>
     </form>
-</body>
-</html>
+{% endblock %}

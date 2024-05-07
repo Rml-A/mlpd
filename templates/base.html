@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Моя задача{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Здесь можно подключить CSS-стили или другие метаданные -->
+</head>
+<body>
+    <header>
+        <h1>Менеджер задач</h1>
+        <!-- Здесь можно добавить навигационную панель или другие элементы интерфейса -->
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Здесь будет отображаться контент каждой страницы, который будет определен в дочерних шаблонах -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <!-- Здесь можно добавить футер или другие элементы интерфейса -->
+    </footer>
+</body>
+</html>

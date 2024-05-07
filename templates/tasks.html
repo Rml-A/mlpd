@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Список задач{% endblock %}
+
+{% block content %}
+    <h2>Список задач</h2>
+    <form action="{{ url_for('tasks') }}" method="get">
+        <label for="status">Фильтр по статусу:</label>
+        <select id="status" name="status">
+            <option value="">Все</option>
+            <option value="Новая">Новая</option>
+            <option value="В работе">В работе</option>
+            <option value="Завершена">Завершена</option>
+            <option value="Отложена">Отложена</option>
+            <option value="Отменена">Отменена</option>
+        </select>
+        <button type="submit">Применить фильтр</button>
+    </form>
+
+    <ul>
+        {% for task in tasks %}
+            <li>{{ task.title }} - {{ task.status }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('index') }}" class="btn btn-primary">На главную страницу</a> <!-- Кнопка для перехода на главную страницу -->
+{% endblock %}
