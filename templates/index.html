@@ -24,16 +24,7 @@
             <h3>{{ task.title }}</h3>
             <p>{{ task.description }}</p>
             <p>Статус: {{ task.status }}</p>
-            <form method="POST" action="{{ url_for('update_task_status', task_id=task.id) }}">
-                <select name="new_status">
-                    <option value="Новая">Новая</option>
-                    <option value="В работе">В работе</option>
-                    <option value="Завершена">Завершена</option>
-                    <option value="Отложена">Отложена</option>
-                    <option value="Отменена">Отменена</option>
-                </select>
-                <button type="submit">Изменить статус</button>
-            </form>
+            <a href="{{ url_for('view_task', id=task.id) }}">Просмотреть</a>
             <a href="{{ url_for('edit_task', id=task.id) }}">Редактировать</a>
             <a href="{{ url_for('delete_task', id=task.id) }}" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?')">Удалить</a>
         </div>

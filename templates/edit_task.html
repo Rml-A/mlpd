@@ -9,6 +9,14 @@
         <input type="text" id="title" name="title" value="{{ task.title }}"><br>
         <label for="description">Описание:</label><br>
         <textarea id="description" name="description">{{ task.description }}</textarea><br>
+        <label for="status">Статус:</label><br>
+        <select id="status" name="status">
+            <option value="Новая" {% if task.status =='Новая' %}selected{% endif %}>Новая</option>
+            <option value="В работе"{% if task.status =='В работе' %} selected{% endif %}>В работе</option>
+            <option value="Завершена" {% if task.status =='Завершена' %}selected{% endif %}>Завершена</option>
+            <option value="Отложена" {% if task.status =='Отложена' %}selected{% endif %}>Отложена</option>
+            <option value="Отменена" {% if task.status =='Отменена' %}selected{% endif %}>Отменена</option>
+        </select><br>
         <button type="submit">Сохранить изменения</button>
     </form>
 {% endblock %}

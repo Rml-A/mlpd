@@ -58,6 +58,7 @@ def edit_task(id):
     if request.method == 'POST':
         task.title = request.form['title']
         task.description = request.form['description']
+        task.status = request.form['status']
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('edit_task.html', task=task)
@@ -68,18 +69,18 @@ def view_task(id):
     task = Task.query.get_or_404(id)
     return render_template('view_task.html', task=task)
 
-
-@app.route('/update_task_status/<int:task_id>', methods=['POST'])
-def update_task_status(task_id):
-    new_status = request.form['new_status']
-    task = Task.query.get(task_id)
-    if task:
-        task.status = new_status
-        db.session.commit()
-        flash('Статус задачи успешно обновлен', 'success')
-    else:
-        flash('Задача не найдена', 'error')
-    return redirect(url_for('index'))
+# Удалить маршрут если он нигде не используется!!!
+# @app.route('/update_task_status/<int:task_id>', methods=['POST'])
+# def update_task_status(task_id):
+#     new_status = request.form['new_status']
+#     task = Task.query.get(task_id)
+#     if task:
+#         task.status = new_status
+#         db.session.commit()
+#         flash('Статус задачи успешно обновлен', 'success')
+#     else:
+#         flash('Задача не найдена', 'error')
+#     return redirect(url_for('index'))
 
 
 @app.route('/tasks')
