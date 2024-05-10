@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}Создать задачу{% endblock %}
-
 {% block content %}
     <h1>Создать новую задачу</h1>
     <form method="POST" action="{{ url_for('create_task') }}">
@@ -10,5 +8,7 @@
         <label for="description">Описание:</label><br>
         <textarea id="description" name="description" rows="4" cols="50" required></textarea><br>
         <button type="submit">Создать задачу</button>
+        <!-- Добавим скрытое поле с CSRF-токеном -->
+        {{ form.csrf_token }}
     </form>
 {% endblock %}

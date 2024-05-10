@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask import flash
-from models import db, Task
+from flask import flash, abort
+from models import db, Task, User
 from sqlalchemy import or_
+from forms import RegistrationForm, LoginForm, TaskForm
+from flask_login import current_user, login_user, logout_user, LoginManager, login_required
+
+
 
 app = Flask(__name__)
+login_manager = LoginManager(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'qwerty'
@@ -13,43 +18,87 @@ db.init_app(app)
 # with app.app_context():
 #     db.create_all()
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password', 'danger')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('index'))
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    # Здесь необходимо реализовать загрузку пользователя из базы данных или другого источника данных
+    return User.query.get(int(user_id))
+
 
 @app.route('/', methods=['GET'])
 def index():
     search_query = request.args.get('search', '')
     status_filter = request.args.get('status', '')
 
-    tasks = Task.query
+    if current_user.is_authenticated:
+        tasks = Task.query.filter_by(user_id=current_user.id)
 
-    if search_query:
-        tasks = tasks.filter(or_(Task.title.contains(search_query), Task.description.contains(search_query)))
-    if status_filter:
-        tasks = tasks.filter_by(status=status_filter)
+        if search_query:
+            tasks = tasks.filter(or_(Task.title.contains(search_query), Task.description.contains(search_query)))
+        if status_filter:
+            tasks = tasks.filter_by(status=status_filter)
 
-    tasks = tasks.all()
+        tasks = tasks.all()
 
-    return render_template('index.html', tasks=tasks)
+        return render_template('index.html', tasks=tasks)
+    else:
+        return render_template('index.html', tasks=[])
 
 
 @app.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_task():
-    if request.method == 'POST':
-        title = request.form['title']
-        description = request.form['description']
-        new_task = Task(title=title, description=description)
+    form = TaskForm()
+
+    if form.validate_on_submit():
+        title = form.title.data
+        description = form.description.data
+        new_task = Task(title=title, description=description, user_id=current_user.id)
         db.session.add(new_task)
         db.session.commit()
+        flash('Task created successfully', 'success')
         return redirect(url_for('index'))
-    else:
-        return render_template('create_task.html')
+    return render_template('create_task.html', form=form)
 
 
 @app.route('/delete/<int:id>')
 def delete_task(id):
-    task_to_delete = Task.query.get_or_404(id)
+    task_to_delete = db.session.get(Task, id)
+    if task_to_delete is None:
+        abort(404)
     db.session.delete(task_to_delete)
     db.session.commit()
+    flash('Task deleted successfully', 'success')
     return redirect(url_for('index'))
+
+
+# @app.route('/delete/<int:id>')
+# def delete_task(id):
+#     task_to_delete = Task.query.get_or_404(id)
+#     db.session.delete(task_to_delete)
+#     db.session.commit()
+#     return redirect(url_for('index'))
 
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -69,28 +118,33 @@ def view_task(id):
     task = Task.query.get_or_404(id)
     return render_template('view_task.html', task=task)
 
-# Удалить маршрут если он нигде не используется!!!
-# @app.route('/update_task_status/<int:task_id>', methods=['POST'])
-# def update_task_status(task_id):
-#     new_status = request.form['new_status']
-#     task = Task.query.get(task_id)
-#     if task:
-#         task.status = new_status
-#         db.session.commit()
-#         flash('Статус задачи успешно обновлен', 'success')
-#     else:
-#         flash('Задача не найдена', 'error')
-#     return redirect(url_for('index'))
 
 
 @app.route('/tasks')
+@login_required
 def tasks():
     status = request.args.get('status')
+    tasks = Task.query.filter_by(user_id=current_user.id)
+
     if status:
-        tasks = Task.query.filter_by(status=status).all()
-    else:
-        tasks = Task.query.all()
+        tasks = tasks.filter_by(status=status)
+
+    tasks = tasks.all()
+
     return render_template('tasks.html', tasks=tasks)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
 
 
 
