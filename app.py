@@ -4,7 +4,7 @@ from models import db, Task, User
 from sqlalchemy import or_
 from forms import RegistrationForm, LoginForm, TaskForm
 from flask_login import current_user, login_user, logout_user, LoginManager, login_required
-
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -17,6 +17,7 @@ db.init_app(app)
 # # Создание всех таблиц при первом запуске приложения
 # with app.app_context():
 #     db.create_all()
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -76,12 +77,14 @@ def create_task():
     if form.validate_on_submit():
         title = form.title.data
         description = form.description.data
-        new_task = Task(title=title, description=description, user_id=current_user.id)
+        created_at = datetime.utcnow()  # Получение текущего времени
+        new_task = Task(title=title, description=description, user_id=current_user.id, created_at=created_at)  # Передача времени создания в объект задачи
+        # new_task = Task(title=title, description=description, user_id=current_user.id)
         db.session.add(new_task)
         db.session.commit()
         flash('Task created successfully', 'success')
         return redirect(url_for('index'))
-    return render_template('create_task.html', form=form)
+    return render_template('create_task.html', form=form, datetime=datetime)
 
 
 @app.route('/delete/<int:id>')

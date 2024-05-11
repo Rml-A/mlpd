@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -11,10 +11,15 @@ class Task(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(20), nullable=False, default='Новая')
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # Поле для хранения времени создания задачи
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return f'<Task {self.id}>'
+
+    @property
+    def formatted_created_at(self):
+        return self.created_at.strftime('%d.%m.%Y')  # Форматирование времени создания задачи
 
 
 

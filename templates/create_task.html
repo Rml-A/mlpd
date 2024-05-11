@@ -7,6 +7,8 @@
         <input type="text" id="title" name="title" required><br>
         <label for="description">Описание:</label><br>
         <textarea id="description" name="description" rows="4" cols="50" required></textarea><br>
+        <!-- Добавим скрытое поле для передачи даты создания задачи -->
+        <input type="hidden" id="created_at" name="created_at" value="{{ datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') }}">
         <button type="submit">Создать задачу</button>
         <!-- Добавим скрытое поле с CSRF-токеном -->
         {{ form.csrf_token }}
