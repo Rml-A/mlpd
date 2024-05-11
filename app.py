@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask import flash, abort
 from models import db, Task, User
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from forms import RegistrationForm, LoginForm, TaskForm
 from flask_login import current_user, login_user, logout_user, LoginManager, login_required
 from datetime import datetime
@@ -53,12 +53,16 @@ def index():
         # Маршрут для аутентифицированных пользователей
         search_query = request.args.get('search', '')
         status_filter = request.args.get('status', '')
+        created_at_filter = request.args.get('created_at', '')  # Получаем значение фильтрации по дате создания
         tasks = Task.query.filter_by(user_id=current_user.id)
 
         if search_query:
             tasks = tasks.filter(or_(Task.title.contains(search_query), Task.description.contains(search_query)))
         if status_filter:
             tasks = tasks.filter_by(status=status_filter)
+        if created_at_filter:  # Если есть фильтр по дате создания, фильтруем задачи по этому параметру
+            created_at_date = datetime.strptime(created_at_filter, '%d.%m.%Y').date()  # Преобразуем строку в объект datetime.date
+            tasks = tasks.filter(func.date(Task.created_at) == func.date(created_at_date))
 
         tasks = tasks.all()
 
@@ -68,6 +72,7 @@ def index():
         login_form = LoginForm()
         registration_form = RegistrationForm()
         return render_template('landing_page.html', login_form=login_form, registration_form=registration_form)
+
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -79,7 +84,6 @@ def create_task():
         description = form.description.data
         created_at = datetime.utcnow()  # Получение текущего времени
         new_task = Task(title=title, description=description, user_id=current_user.id, created_at=created_at)  # Передача времени создания в объект задачи
-        # new_task = Task(title=title, description=description, user_id=current_user.id)
         db.session.add(new_task)
         db.session.commit()
         flash('Task created successfully', 'success')
@@ -96,14 +100,6 @@ def delete_task(id):
     db.session.commit()
     flash('Task deleted successfully', 'success')
     return redirect(url_for('index'))
-
-
-# @app.route('/delete/<int:id>')
-# def delete_task(id):
-#     task_to_delete = Task.query.get_or_404(id)
-#     db.session.delete(task_to_delete)
-#     db.session.commit()
-#     return redirect(url_for('index'))
 
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -129,10 +125,21 @@ def view_task(id):
 @login_required
 def tasks():
     status = request.args.get('status')
+    created_at = request.args.get('created_at')  # Получаем дату создания из запроса
+
     tasks = Task.query.filter_by(user_id=current_user.id)
 
     if status:
         tasks = tasks.filter_by(status=status)
+
+    if created_at:
+        # Парсим дату создания из строки в формат datetime
+        try:
+            created_at_date = datetime.strptime(created_at, '%d.%m.%Y')
+            # Фильтруем задачи по дате создания
+            tasks = tasks.filter(func.date(Task.created_at) == func.date(created_at_date))
+        except ValueError:
+            flash('Неверный формат даты', 'danger')
 
     tasks = tasks.all()
 
