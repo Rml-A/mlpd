@@ -48,10 +48,10 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET'])
 def index():
-    search_query = request.args.get('search', '')
-    status_filter = request.args.get('status', '')
-
     if current_user.is_authenticated:
+        # Маршрут для аутентифицированных пользователей
+        search_query = request.args.get('search', '')
+        status_filter = request.args.get('status', '')
         tasks = Task.query.filter_by(user_id=current_user.id)
 
         if search_query:
@@ -63,8 +63,10 @@ def index():
 
         return render_template('index.html', tasks=tasks)
     else:
-        return render_template('index.html', tasks=[])
-
+        # Маршрут для неаутентифицированных пользователей
+        login_form = LoginForm()
+        registration_form = RegistrationForm()
+        return render_template('landing_page.html', login_form=login_form, registration_form=registration_form)
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
