@@ -13,4 +13,10 @@
         <!-- Добавим скрытое поле с CSRF-токеном -->
         {{ form.csrf_token }}
     </form>
+
+    {% for message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-{{ message[0] }}" role="alert">
+            {{ message[1] }}
+        </div>
+    {% endfor %}
 {% endblock %}

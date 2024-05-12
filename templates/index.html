@@ -21,6 +21,12 @@
         <button type="submit">Применить фильтр</button>
     </form>
 
+    {% for message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-{{ message[0] }}" role="alert">
+            {{ message[1] }}
+        </div>
+    {% endfor %}
+
     {% for task in tasks %}
         <div class="task">
             <h3>{{ task.title }}</h3>

@@ -27,9 +27,13 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password', 'danger')
-            return redirect(url_for('login'))
+            flash('Неверное имя пользователя или пароль', 'danger')
+            return redirect(url_for('index'))
         login_user(user, remember=form.remember_me.data)
+
+        # Добавляем флэш-сообщение при успешной аутентификации
+        flash('Вы успешно вошли в систему!', 'success')
+
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
@@ -37,7 +41,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out.', 'info')
+    flash('Вы вышли из системы.', 'info')
     return redirect(url_for('index'))
 
 
@@ -86,7 +90,7 @@ def create_task():
         new_task = Task(title=title, description=description, user_id=current_user.id, created_at=created_at)  # Передача времени создания в объект задачи
         db.session.add(new_task)
         db.session.commit()
-        flash('Task created successfully', 'success')
+        flash('Задача успешно создана', 'success')
         return redirect(url_for('index'))
     return render_template('create_task.html', form=form, datetime=datetime)
 
@@ -98,7 +102,7 @@ def delete_task(id):
         abort(404)
     db.session.delete(task_to_delete)
     db.session.commit()
-    flash('Task deleted successfully', 'success')
+    flash('Задача успешно удалена', 'success')
     return redirect(url_for('index'))
 
 
@@ -154,7 +158,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!', 'success')
+        flash('Поздравляю, теперь вы зарегестрированный пользователь! Можете войдите в систему!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 

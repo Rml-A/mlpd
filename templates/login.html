@@ -3,6 +3,13 @@
 {% block title %}Вход{% endblock %}
 
 {% block content %}
+
+{% for message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-{{ message[0] }}" role="alert">
+            {{ message[1] }}
+        </div>
+    {% endfor %}
+
   <h2>Вход</h2>
   <form method="POST" action="">
     {{ form.hidden_tag() }}
