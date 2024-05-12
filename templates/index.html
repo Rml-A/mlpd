@@ -6,6 +6,13 @@
     <h2>Список задач</h2>
     <a href="{{ url_for('create_task') }}">Создать новую задачу</a>
 
+    <!-- Добавим форму поиска -->
+    <form action="{{ url_for('index') }}" method="get">
+        <label for="search">Поиск по названию:</label>
+        <input type="text" id="search" name="search" placeholder="Введите название задачи">
+        <button type="submit">Найти</button>
+    </form>
+
     <form action="{{ url_for('tasks') }}" method="get">
         <label for="status">Фильтр по статусу:</label>
         <select id="status" name="status">
