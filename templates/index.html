@@ -3,36 +3,41 @@
 {% block title %}Список задач{% endblock %}
 
 {% block content %}
-    <h2>Список задач</h2>
-    <a href="{{ url_for('create_task') }}">Создать новую задачу</a>
-
-    <!-- Добавим форму поиска -->
-    <form action="{{ url_for('index') }}" method="get">
-        <label for="search">Поиск по названию:</label>
-        <input type="text" id="search" name="search" placeholder="Введите название задачи">
-        <button type="submit">Найти</button>
-    </form>
-
-    <form action="{{ url_for('tasks') }}" method="get">
-        <label for="status">Фильтр по статусу:</label>
-        <select id="status" name="status">
-            <option value="">Все</option>
-            <option value="Новая">Новая</option>
-            <option value="В работе">В работе</option>
-            <option value="Завершена">Завершена</option>
-            <option value="Отложена">Отложена</option>
-            <option value="Отменена">Отменена</option>
-        </select>
-        <label for="created_at">Фильтр по дате создания (DD.MM.YYYY):</label>
-        <input type="text" id="created_at" name="created_at" placeholder="Введите дату создания">
-        <button type="submit">Применить фильтр</button>
-    </form>
-
     {% for message in get_flashed_messages(with_categories=true) %}
         <div class="alert alert-{{ message[0] }}" role="alert">
             {{ message[1] }}
         </div>
     {% endfor %}
+
+     <!-- Форма поиска и фильтры справа от заголовка -->
+    <div class="task-header">
+        <!-- Добавим форму поиска -->
+        <form action="{{ url_for('index') }}" method="get">
+            <label for="search">Поиск по названию:</label>
+            <input type="text" id="search" name="search" placeholder="Введите название задачи">
+            <button type="submit">Найти</button>
+        </form>
+
+        <form action="{{ url_for('tasks') }}" method="get">
+            <label for="status">Фильтр по статусу:</label>
+            <select id="status" name="status">
+                <option value="">Все</option>
+                <option value="Новая">Новая</option>
+                <option value="В работе">В работе</option>
+                <option value="Завершена">Завершена</option>
+                <option value="Отложена">Отложена</option>
+                <option value="Отменена">Отменена</option>
+            </select>
+            <label for="created_at">Фильтр по дате создания (DD.MM.YYYY):</label>
+            <input type="text" id="created_at" name="created_at" placeholder="Введите дату создания">
+            <button type="submit">Применить фильтр</button>
+        </form>
+    </div>
+
+    <a href="{{ url_for('create_task') }}" class="btn btn-primary btn-create-task">Создать новую задачу</a>
+    <h2>Список задач</h2>
+
+
 
     {% for task in tasks %}
         <div class="task">

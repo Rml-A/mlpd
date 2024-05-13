@@ -125,3 +125,37 @@ label {
     margin-top: 30px; /* Установим верхний отступ, чтобы контент не перекрывался шапкой */
     padding-top: 20px; /* Добавим верхний отступ для контента */
 }
+
+/* Стили для кнопки создания новой задачи */
+.btn-create-task {
+    background-color: #28a745; /* Зеленый цвет */
+    color: white;
+    font-weight: bold;
+}
+
+.btn-create-task:hover {
+    background-color: #218838; /* Темно-зеленый при наведении */
+}
+
+/* Стили для расположения формы поиска и фильтров в строчку */
+.task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+.task-header form {
+    display: flex;
+    align-items: center;
+}
+
+.task-header form label {
+    margin-right: 10px;
+}
+
+.task-header form input,
+.task-header form select,
+.task-header form button {
+    margin-right: 10px;
+}
