@@ -1,10 +1,127 @@
+/* Основные цвета */
+:root {
+    --main-color: #007bff; /* Основной синий цвет */
+    --light-blue: #4da8da; /* Светло-синий */
+    --dark-blue: #0056b3; /* Темно-синий */
+}
+
+/* Фон и шрифты */
+body {
+    background-color: #f8f9fa; /* Белый фон */
+    color: #343a40; /* Черный текст */
+    font-family: 'Roboto', sans-serif; /* Шрифт */
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--main-color); /* Основной синий цвет для заголовков */
+    font-family: 'Montserrat', sans-serif; /* Шрифт */
+}
+
+/* Ссылки */
+a {
+    color: var(--main-color); /* Основной синий цвет для ссылок */
+}
+
+/* Формы */
 form {
     margin-bottom: 20px;
 }
 
 input[type="text"],
-input[type="submit"],
 select {
     margin-right: 10px;
-    padding: 5px;
+    padding: 10px; /* Изменено */
+    border: 1px solid #ced4da; /* Добавлено */
+    border-radius: 4px; /* Добавлено */
+    box-shadow: none; /* Добавлено */
+}
+
+input[type="text"]:focus,
+select:focus {
+    border-color: var(--main-color); /* Изменено */
+    outline: none; /* Добавлено */
+}
+
+input[type="submit"],
+button {
+    padding: 10px 20px; /* Изменено */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: var(--main-color);
+    color: white;
+    transition: background-color 0.3s ease; /* Добавлено */
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background-color: var(--dark-blue);
+}
+
+/* Стили для меток */
+label {
+    margin-bottom: 8px; /* Добавлено */
+    display: block; /* Добавлено */
+    font-weight: bold; /* Добавлено */
+}
+
+/* Отступы и размеры */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--main-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--dark-blue);
+}
+
+/* Стили для меню навигации */
+.navbar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s;
+}
+
+.navbar a:hover {
+    color: #0056b3;
+}
+
+/* Стили для контента */
+.main-content {
+    margin-top: 30px; /* Установим верхний отступ, чтобы контент не перекрывался шапкой */
+    padding-top: 20px; /* Добавим верхний отступ для контента */
 }
