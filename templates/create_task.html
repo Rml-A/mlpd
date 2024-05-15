@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Создать задачу{% endblock %}
 {% block content %}
-    <h1>Создать новую задачу</h1>
-    <form method="POST" action="{{ url_for('create_task') }}">
-        <label for="title">Заголовок:</label>
-        <input type="text" id="title" name="title" required><br>
-        <label for="description">Описание:</label><br>
-        <textarea id="description" name="description" rows="4" cols="50" required></textarea><br>
-        <!-- Добавим скрытое поле для передачи даты создания задачи -->
-        <input type="hidden" id="created_at" name="created_at" value="{{ datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') }}">
-        <button type="submit">Создать задачу</button>
-        <!-- Добавим скрытое поле с CSRF-токеном -->
-        {{ form.csrf_token }}
-    </form>
+<h1>Создать новую задачу</h1>
+<form method="POST" action="{{ url_for('create_task') }}">
+    <label for="title">Заголовок:</label>
+    <input type="text" id="title" name="title" required><br>
+    <label for="description">Описание:</label><br>
+    <textarea id="description" name="description" rows="4" cols="50" required></textarea><br>
 
-    {% for message in get_flashed_messages(with_categories=true) %}
-        <div class="alert alert-{{ message[0] }}" role="alert">
-            {{ message[1] }}
-        </div>
-    {% endfor %}
+    <input type="hidden" id="created_at" name="created_at"
+           value="{{ datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') }}">
+    <button type="submit">Создать задачу</button>
+
+    {{ form.csrf_token }}
+</form>
+
+{% for message in get_flashed_messages(with_categories=true) %}
+<div class="alert alert-{{ message[0] }}" role="alert">
+    {{ message[1] }}
+</div>
+{% endfor %}
 {% endblock %}

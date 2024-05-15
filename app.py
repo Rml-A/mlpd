@@ -6,13 +6,13 @@ from forms import RegistrationForm, LoginForm, TaskForm
 from flask_login import current_user, login_user, logout_user, LoginManager, login_required
 from datetime import datetime
 
-
 app = Flask(__name__)
 login_manager = LoginManager(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'qwerty'
 db.init_app(app)
+
 
 # # Создание всех таблиц при первом запуске приложения
 # with app.app_context():
@@ -31,11 +31,11 @@ def login():
             return redirect(url_for('index'))
         login_user(user, remember=form.remember_me.data)
 
-        # Добавляем флэш-сообщение при успешной аутентификации
         flash('Вы успешно вошли в систему!', 'success')
 
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
+
 
 @app.route('/logout')
 @login_required
@@ -54,25 +54,25 @@ def load_user(user_id):
 @app.route('/', methods=['GET'])
 def index():
     if current_user.is_authenticated:
-        # Маршрут для аутентифицированных пользователей
+
         search_query = request.args.get('search', '')
         status_filter = request.args.get('status', '')
-        created_at_filter = request.args.get('created_at', '')  # Получаем значение фильтрации по дате создания
+        created_at_filter = request.args.get('created_at', '')
         tasks = Task.query.filter_by(user_id=current_user.id)
 
         if search_query:
             tasks = tasks.filter(or_(Task.title.contains(search_query), Task.description.contains(search_query)))
         if status_filter:
             tasks = tasks.filter_by(status=status_filter)
-        if created_at_filter:  # Если есть фильтр по дате создания, фильтруем задачи по этому параметру
-            created_at_date = datetime.strptime(created_at_filter, '%d.%m.%Y').date()  # Преобразуем строку в объект datetime.date
+        if created_at_filter:
+            created_at_date = datetime.strptime(created_at_filter, '%d.%m.%Y').date()
             tasks = tasks.filter(func.date(Task.created_at) == func.date(created_at_date))
 
         tasks = tasks.all()
 
         return render_template('index.html', tasks=tasks)
     else:
-        # Маршрут для неаутентифицированных пользователей
+
         login_form = LoginForm()
         registration_form = RegistrationForm()
         return render_template('landing_page.html', login_form=login_form, registration_form=registration_form)
@@ -86,8 +86,8 @@ def create_task():
     if form.validate_on_submit():
         title = form.title.data
         description = form.description.data
-        created_at = datetime.utcnow()  # Получение текущего времени
-        new_task = Task(title=title, description=description, user_id=current_user.id, created_at=created_at)  # Передача времени создания в объект задачи
+        created_at = datetime.utcnow()
+        new_task = Task(title=title, description=description, user_id=current_user.id, created_at=created_at)
         db.session.add(new_task)
         db.session.commit()
         flash('Задача успешно создана', 'success')
@@ -124,7 +124,6 @@ def view_task(id):
     return render_template('view_task.html', task=task)
 
 
-
 @app.route('/tasks')
 @login_required
 def tasks():
@@ -137,10 +136,10 @@ def tasks():
         tasks = tasks.filter_by(status=status)
 
     if created_at:
-        # Парсим дату создания из строки в формат datetime
+
         try:
             created_at_date = datetime.strptime(created_at, '%d.%m.%Y')
-            # Фильтруем задачи по дате создания
+
             tasks = tasks.filter(func.date(Task.created_at) == func.date(created_at_date))
         except ValueError:
             flash('Неверный формат даты', 'danger')
@@ -161,9 +160,6 @@ def register():
         flash('Поздравляю, теперь вы зарегестрированный пользователь! Можете войдите в систему!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
-
-
-
 
 
 if __name__ == '__main__':

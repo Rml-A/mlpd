@@ -3,19 +3,19 @@
 {% block title %}Просмотр задачи{% endblock %}
 
 {% block content %}
-    <h1>Просмотр задачи</h1>
-    <h2>{{ task.title }}</h2>
-    <p>{{ task.description }}</p>
-    <p>Статус: {{ task.status }}</p>
-    <p>Дата создания: {{ task.created_at.strftime('%d.%m.%Y') }}</p>  <!-- Отображение времени создания в нужном формате -->
-    <!-- Дополнительная информация о задаче, если необходимо -->
+<h1>Просмотр задачи</h1>
+<h2>{{ task.title }}</h2>
+<p>{{ task.description }}</p>
+<p>Статус: {{ task.status }}</p>
+<p>Дата создания: {{ task.created_at.strftime('%d.%m.%Y') }}</p>
 
-    {% for message in get_flashed_messages(with_categories=true) %}
-        <div class="alert alert-{{ message[0] }}" role="alert">
-            {{ message[1] }}
-        </div>
-    {% endfor %}
 
-    <a href="{{ url_for('index') }}">Назад к списку задач</a>
-    <!-- Добавьте дополнительные ссылки или кнопки для других действий, если необходимо -->
+{% for message in get_flashed_messages(with_categories=true) %}
+<div class="alert alert-{{ message[0] }}" role="alert">
+    {{ message[1] }}
+</div>
+{% endfor %}
+
+<a href="{{ url_for('index') }}">Назад к списку задач</a>
+
 {% endblock %}

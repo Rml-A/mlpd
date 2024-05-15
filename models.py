@@ -12,7 +12,7 @@ class Task(db.Model):
     description = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(20), nullable=False, default='Новая')
     created_at = db.Column(db.DateTime, nullable=False,
-                           default=datetime.utcnow)  # Поле для хранения времени создания задачи
+                           default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
@@ -20,7 +20,7 @@ class Task(db.Model):
 
     @property
     def formatted_created_at(self):
-        return self.created_at.strftime('%d.%m.%Y')  # Форматирование времени создания задачи
+        return self.created_at.strftime('%d.%m.%Y')
 
 
 class User(UserMixin, db.Model):

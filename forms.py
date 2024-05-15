@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationE
 from models import User
 from datetime import datetime
 
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -32,5 +33,5 @@ class LoginForm(FlaskForm):
 class TaskForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description')
-    created_at = HiddenField(default=datetime.utcnow)  # Добавлено скрытое поле для времени создания задачи
+    created_at = HiddenField(default=datetime.utcnow)
     submit = SubmitField('Submit')
